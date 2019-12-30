@@ -1,0 +1,116 @@
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index b21b3a64641a..4d7a2d014901 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -629,7 +629,7 @@ dtb-$(CONFIG_SOC_VF610) += \
+ 	vf610-zii-ssmb-spu3.dtb
+ dtb-$(CONFIG_ARCH_MXS) += \
+ 	imx23-evk.dtb \
+-	imx23-olinuxino.dtb \
++	imx23-holiday.dtb \
+ 	imx23-sansa.dtb \
+ 	imx23-stmp378x_devb.dtb \
+ 	imx23-xfi3.dtb \
+diff --git a/arch/arm/boot/dts/imx23-olinuxino.dts b/arch/arm/boot/dts/imx23-holiday.dts
+similarity index 72%
+rename from arch/arm/boot/dts/imx23-olinuxino.dts
+rename to arch/arm/boot/dts/imx23-holiday.dts
+index 4c9aafe00b5d..f27def4bf79f 100644
+--- a/arch/arm/boot/dts/imx23-olinuxino.dts
++++ b/arch/arm/boot/dts/imx23-holiday.dts
+@@ -1,8 +1,11 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Copyright 2012 Freescale Semiconductor, Inc.
++ * Copyright 2019 Froosh Networks
+  *
+- * Author: Fabio Estevam <fabio.estevam@freescale.com>
++ * Author: Robin Frousheger <robin@froosh.net>
++ *
++ * Based upon imx23-olinuxino.dts from Freescale Semiconductor, Inc., Fabio Estevam <fabio.estevam@freescale.com>
++ * Adjusted for MooresCloud Holiday lights
+  */
+
+ /dts-v1/;
+@@ -10,11 +13,10 @@
+ #include "imx23.dtsi"
+
+ / {
+-	model = "i.MX23 Olinuxino Low Cost Board";
++	model = "MooresCloud Holiday Lights";
+ 	compatible = "olimex,imx23-olinuxino", "fsl,imx23";
+
+-	memory@40000000 {
+-		device_type = "memory";
++	memory {
+ 		reg = <0x40000000 0x04000000>;
+ 	};
+
+@@ -43,14 +45,16 @@
+ 					fsl,pull-up = <MXS_PULL_DISABLE>;
+ 				};
+
+-				led_pin_gpio2_1: led_gpio2_1@0 {
++				spi2_pins_holiday: spi2@0 {
+ 					reg = <0>;
+ 					fsl,pinmux-ids = <
+-						MX23_PAD_SSP1_DETECT__GPIO_2_1
++						MX23_PAD_GPMI_WRN__SSP2_SCK
++						MX23_PAD_GPMI_RDY1__SSP2_CMD
++						MX23_PAD_GPMI_D00__SSP2_DATA0
+ 					>;
+-					fsl,drive-strength = <MXS_DRIVE_4mA>;
++					fsl,drive-strength = <MXS_DRIVE_8mA>;
+ 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
+-					fsl,pull-up = <MXS_PULL_DISABLE>;
++					fsl,pull-up = <MXS_PULL_ENABLE>;
+ 				};
+ 			};
+
+@@ -59,8 +63,14 @@
+ 				#size-cells = <0>;
+ 				compatible = "fsl,imx23-spi";
+ 				pinctrl-names = "default";
+-				pinctrl-0 = <&spi2_pins_a>;
++				pinctrl-0 = <&spi2_pins_holiday>;
+ 				status = "okay";
++
++				spidev: spidev@0 {
++					compatible = "spidev";
++					spi-max-frequency = <1000000>;
++					reg = <0>;
++				};
+ 			};
+ 		};
+
+@@ -73,6 +83,14 @@
+ 				pinctrl-names = "default";
+ 				pinctrl-0 = <&i2c_pins_b>;
+ 				status = "okay";
++
++				eeprom@50 {
++					compatible = "atmel,24c64";
++					reg = <0x50>;
++					pagesize = <32>;
++					read-only;
++					status = "okay";
++				};
+ 			};
+
+ 			duart: serial@80070000 {
+@@ -117,15 +135,4 @@
+ 			gpio = <&gpio0 17 0>;
+ 		};
+ 	};
+-
+-	leds {
+-		compatible = "gpio-leds";
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&led_pin_gpio2_1>;
+-
+-		user {
+-			label = "green";
+-			gpios = <&gpio2 1 GPIO_ACTIVE_HIGH>;
+-		};
+-	};
+ };
