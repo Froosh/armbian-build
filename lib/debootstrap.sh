@@ -330,32 +330,33 @@ prepare_partitions()
 	DEFAULT_BOOTSIZE=96	# MiB
 
 	# stage: determine partition configuration
+	# total bodges for imx233-holiday, until I find/create the 'right' way to do it...
 	if [[ -n $BOOTFS_TYPE ]]; then
 		# 2 partition setup with forced /boot type
 		local bootfs=$BOOTFS_TYPE
-		local bootpart=1
-		local rootpart=2
+		local bootpart=2
+		local rootpart=3
 		[[ -z $BOOTSIZE || $BOOTSIZE -le 8 ]] && BOOTSIZE=${DEFAULT_BOOTSIZE}
 	elif [[ $ROOTFS_TYPE != ext4 && $ROOTFS_TYPE != nfs ]]; then
 		# 2 partition setup for non-ext4 local root
 		local bootfs=ext4
-		local bootpart=1
-		local rootpart=2
+		local bootpart=2
+		local rootpart=3
 		[[ -z $BOOTSIZE || $BOOTSIZE -le 8 ]] && BOOTSIZE=${DEFAULT_BOOTSIZE}
 	elif [[ $ROOTFS_TYPE == nfs ]]; then
 		# single partition ext4 /boot, no root
 		local bootfs=ext4
-		local bootpart=1
+		local bootpart=2
 		[[ -z $BOOTSIZE || $BOOTSIZE -le 8 ]] && BOOTSIZE=${DEFAULT_BOOTSIZE} # For cleanup processing only
 	elif [[ $CRYPTROOT_ENABLE == yes ]]; then
 		# 2 partition setup for encrypted /root and non-encrypted /boot
 		local bootfs=ext4
-		local bootpart=1
-		local rootpart=2
+		local bootpart=2
+		local rootpart=3
 		[[ -z $BOOTSIZE || $BOOTSIZE -le 8 ]] && BOOTSIZE=${DEFAULT_BOOTSIZE}
 	else
 		# single partition ext4 root
-		local rootpart=1
+		local rootpart=2
 		BOOTSIZE=0
 	fi
 
@@ -410,8 +411,16 @@ prepare_partitions()
 		parted -s ${SDCARD}.raw -- mkpart primary ${parttype[$ROOTFS_TYPE]} ${rootstart}s -1s
 	else
 		# /boot partition + root partition
-		parted -s ${SDCARD}.raw -- mkpart primary ${parttype[$bootfs]} ${bootstart}s ${bootend}s
-		parted -s ${SDCARD}.raw -- mkpart primary ${parttype[$ROOTFS_TYPE]} ${rootstart}s -1s
+		#parted -s ${SDCARD}.raw -- mkpart primary ${parttype[$bootfs]} ${bootstart}s ${bootend}s
+		#parted -s ${SDCARD}.raw -- mkpart primary ${parttype[$ROOTFS_TYPE]} ${rootstart}s -1s
+
+		# total bodge for imx233-holiday, until I find/create the 'right' way to do it...
+		sfdisk ${SDCARD}.raw <<EOF
+label: dos
+uboot  : size=32M, type=53, bootable
+boot   : size=96M, type=06
+rootfs : type=83
+EOF
 	fi
 
 	# stage: mount image
