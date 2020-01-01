@@ -3,8 +3,11 @@
 # Please edit /boot/armbianEnv.txt to set supported parameters
 #
 
+setenv fdt_addr 0x41000000
+setenv kernel_addr 0x42000000
 setenv ramdisk_addr 0x42A00000
-setenv kernel_addr  $loadaddr
+
+setenv fdt_file imx23-holiday.dtb
 
 # get PARTUUIDs of the partitions on mmc
 setexpr ubootpartnum $mmcpart - 1
@@ -24,22 +27,27 @@ echo "Boot script loaded from mmc ${mmcdev}:${mmcpart}"
 if test -e mmc ${mmcdev}:${mmcpart} ${prefix}armbianEnv.txt; then
 	load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${prefix}armbianEnv.txt
 	env import -t ${loadaddr} ${filesize}
+	echo "Environment loaded from mmc ${mmcdev}:${mmcpart} armbianEnv.txt"
 fi
 
-if test "${console}" = "serial"; then setenv consoleargs "console=ttyAMA0,115200n8"; fi
+if test "${console}" = "serial"; then
+	setenv consoleargs "console=ttyAMA0,115200n8"
+else
+	setenv consoleargs "console=${console},${baudrate}n8"
+fi
 
 setenv bootargs "earlyprintk root=${rootdev} rootwait rootfstype=${rootfstype} ${consoleargs} consoleblank=0 loglevel=${verbosity} ubootpart=${ubootpartuuid} bootpart=${bootpartuuid} usb-storage.quirks=${usbstoragequirks} ${extraargs} ${extraboardargs}"
 
 if test "${docker_optimizations}" = "on"; then setenv bootargs "${bootargs} cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory swapaccount=1"; fi
 
+load mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${prefix}dtb/${fdt_file}
+fdt addr ${fdt_addr}
+fdt resize 65536
+
 load mmc ${mmcdev}:${mmcpart} ${ramdisk_addr} ${prefix}uInitrd
 setenv ramdisk_size $filesize
 
 load mmc ${mmcdev}:${mmcpart} ${kernel_addr} ${prefix}zImage
-
-load mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${prefix}dtb/${fdtfile}
-fdt addr ${fdt_addr}
-fdt resize 65536
 
 bootz ${kernel_addr} ${ramdisk_addr}:${ramdisk_size} ${fdt_addr}
 
