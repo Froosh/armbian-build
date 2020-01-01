@@ -309,7 +309,7 @@ prepare_partitions()
 	mkopts[fat]='-n BOOT'
 	mkopts[ext2]='-q'
 	# mkopts[f2fs] is empty
-	# mkopts[btrfs] is empty
+	mkopts[btrfs]='--label rootfs --data dup --metadata dup'
 	# mkopts[nfs] is empty
 
 	mkfs[ext4]=ext4
@@ -323,7 +323,7 @@ prepare_partitions()
 	# mountopts[ext2] is empty
 	# mountopts[fat] is empty
 	# mountopts[f2fs] is empty
-	mountopts[btrfs]=',commit=600,compress=lzo'
+	mountopts[btrfs]=',ssd,commit=600,compress=zstd'
 	# mountopts[nfs] is empty
 
 	# default BOOTSIZE to use if not specified
