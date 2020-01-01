@@ -4,8 +4,7 @@ Debian based Linux for iMX233-based MooresCloud Holiday lights
 
 [https://www.armbian.com](https://www.armbian.com "Armbian")
 
-
-# How to build an image or a kernel?
+## How to build an image or a kernel ##
 
 Supported build environment is **Ubuntu Bionic 18.04 x64** ([minimal iso image](http://archive.ubuntu.com/ubuntu/dists/bionic/main/installer-amd64/current/images/netboot/mini.iso)).
 
@@ -16,12 +15,14 @@ Supported build environment is **Ubuntu Bionic 18.04 x64** ([minimal iso image](
 - **25GB disk space** or more and **2GB RAM** or more available for the VM, container or native OS,
 - superuser rights (configured `sudo` or root access).
 
-**Execution**
+## Execution ##
 
-	apt-get install dialog
-	git clone https://github.com/froosh/holiday-armbian
-	cd holiday-armbian
-	./compile.sh NO_APT_CACHER="yes" BOARD="imx233-holiday" BRANCH="current" RELEASE="buster" BUILD_MINIMAL=yes BUILD_DESKTOP=no KERNEL_ONLY="no" KERNEL_CONFIGURE="no"
+```bash
+apt-get install dialog
+git clone https://github.com/froosh/holiday-armbian
+cd holiday-armbian
+./compile.sh NO_APT_CACHER="yes" BOARD="imx233-holiday" BRANCH="current" RELEASE="buster" BUILD_MINIMAL=yes BUILD_DESKTOP=no KERNEL_ONLY="no" KERNEL_CONFIGURE="no"
+```
 
 Make sure that full path to the build script does not contain spaces.
 
@@ -29,11 +30,11 @@ You will be prompted with a selection menu for a build option, a board name, a k
 
 Build process uses caching for the compilation and the debootstrap process, so consecutive runs with similar settings will be much faster.
 
-# How to report issues?
+## How to report issues ##
 
 Please read [this](https://github.com/igorpecovnik/lib/blob/master/.github/ISSUE_TEMPLATE.md) notice first before opening an issue.
 
-# How to contribute?
+## How to contribute ##
 
 - [Fork](https://help.github.com/articles/fork-a-repo/) the project
 - Make one or more well commented and clean commits to the repository.
@@ -43,7 +44,7 @@ If it is a new feature request, don't start the coding first. Remember to [open 
 
 If you are struggling, check [this detailed step by step guide on contributing](https://www.exchangecore.com/blog/contributing-concrete5-github/).
 
-## Where to get more info?
+## Where to get more info ##
 
 - [Documentation](https://docs.armbian.com/Developer-Guide_Build-Preparation/ "Developer resources")
 - [Prebuilt images](https://www.armbian.com/download/ "Download section")
