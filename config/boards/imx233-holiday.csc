@@ -1,7 +1,7 @@
 # iMX233 Olinuxino 64MB SoC ... with fancy lights
 BOARD_NAME="MooresCloud Holiday"
 BOARDFAMILY="imx233"
-BOOTCONFIG="mx233_holiday_defconfig"
+BOOTCONFIG="mx23_holiday_defconfig"
 #
 DEFAULT_CONSOLE="ttyAMA0"
 SERIALCON="ttyAMA0"
