@@ -1,7 +1,7 @@
 # Armbian #
 
-Debian based Linux for ARM based single-board computers
-  
+Debian based Linux for iMX233-based MooresCloud Holiday lights
+
 [https://www.armbian.com](https://www.armbian.com "Armbian")
 
 
@@ -18,10 +18,10 @@ Supported build environment is **Ubuntu Bionic 18.04 x64** ([minimal iso image](
 
 **Execution**
 
-	apt-get -y install git
-	git clone https://github.com/armbian/build
-	cd build
-	./compile.sh
+	apt-get install dialog
+	git clone https://github.com/froosh/holiday-armbian
+	cd holiday-armbian
+	./compile.sh NO_APT_CACHER="yes" BOARD="imx233-holiday" BRANCH="current" RELEASE="buster" BUILD_MINIMAL=yes BUILD_DESKTOP=no KERNEL_ONLY="no" KERNEL_CONFIGURE="no"
 
 Make sure that full path to the build script does not contain spaces.
 
@@ -36,7 +36,7 @@ Please read [this](https://github.com/igorpecovnik/lib/blob/master/.github/ISSUE
 # How to contribute?
 
 - [Fork](https://help.github.com/articles/fork-a-repo/) the project
-- Make one or more well commented and clean commits to the repository. 
+- Make one or more well commented and clean commits to the repository.
 - Perform a [pull request](https://help.github.com/articles/creating-a-pull-request/) in github's web interface.
 
 If it is a new feature request, don't start the coding first. Remember to [open an issue](https://guides.github.com/features/issues/) to discuss the new feature.
