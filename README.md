@@ -21,7 +21,7 @@ Supported build environment is **Ubuntu Bionic 18.04 x64** ([minimal iso image](
 apt-get install dialog
 git clone https://github.com/froosh/holiday-armbian
 cd holiday-armbian
-./compile.sh NO_APT_CACHER="yes" BOARD="imx233-holiday" BRANCH="current" RELEASE="buster" BUILD_MINIMAL=yes BUILD_DESKTOP=no KERNEL_ONLY="no" KERNEL_CONFIGURE="no"
+./compile.sh NO_APT_CACHER="yes" BOARD="imx233-holiday" BRANCH="current" RELEASE="buster" BUILD_MINIMAL="yes" BUILD_DESKTOP="no" KERNEL_ONLY="no" KERNEL_CONFIGURE="no"
 ```
 
 Make sure that full path to the build script does not contain spaces.

@@ -252,10 +252,12 @@ esac
 
 
 DEBIAN_MIRROR='httpredir.debian.org/debian'
+DEBIAN_SECURTY='http://security.debian.org/'
 UBUNTU_MIRROR='ports.ubuntu.com/'
 
 if [[ $DOWNLOAD_MIRROR == china ]] ; then
 	DEBIAN_MIRROR='mirrors.tuna.tsinghua.edu.cn/debian'
+	DEBIAN_SECURTY='mirrors.tuna.tsinghua.edu.cn/debian-security'
 	UBUNTU_MIRROR='mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/'
 fi
 
@@ -312,7 +314,7 @@ Build directory permissions:
 $(getfacl -p "${SRC}")
 
 Temp directory permissions:
-$(getfacl -p "${SRC}"/.tmp)
+$(getfacl -p "${SRC}"/.tmp 2> /dev/null)
 
 ## BUILD CONFIGURATION
 
