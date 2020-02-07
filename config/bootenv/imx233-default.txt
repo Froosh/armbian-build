@@ -1,1 +1,2 @@
 verbosity=7
+extraboardargs=zswap.zpool=z3fold

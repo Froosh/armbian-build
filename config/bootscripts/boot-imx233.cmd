@@ -9,18 +9,10 @@ setenv ramdisk_addr 0x42A00000
 
 setenv fdt_file imx23-holiday.dtb
 
-# get PARTUUIDs of the partitions on mmc
-setexpr ubootpartnum $mmcpart - 1
-part uuid mmc ${mmcdev}:${ubootpartnum} ubootpartuuid
-part uuid mmc ${mmcdev}:${mmcpart} bootpartuuid
-setexpr rootpartnum $mmcpart + 1
-part uuid mmc ${mmcdev}:${rootpartnum} rootpartuuid
-setenv rootdev "PARTUUID=${rootpartuuid}"
-
-# other default values
+# default values
+setenv rootdev "/dev/mmcblk${mmcdev}p3"
 setenv rootfstype "ext4"
-setenv verbosity "1"
-setenv docker_optimizations "off"
+setenv verbosity "7"
 
 echo "Boot script loaded from mmc ${mmcdev}:${mmcpart}"
 
@@ -30,15 +22,9 @@ if test -e mmc ${mmcdev}:${mmcpart} ${prefix}armbianEnv.txt; then
 	echo "Environment loaded from mmc ${mmcdev}:${mmcpart} armbianEnv.txt"
 fi
 
-if test "${console}" = "serial"; then
-	setenv consoleargs "console=ttyAMA0,115200n8"
-else
-	setenv consoleargs "console=${console},${baudrate}n8"
-fi
+setenv consoleargs "console=${console},${baudrate}n8"
 
-setenv bootargs "earlyprintk root=${rootdev} rootwait rootfstype=${rootfstype} ${consoleargs} consoleblank=0 loglevel=${verbosity} ubootpart=${ubootpartuuid} bootpart=${bootpartuuid} usb-storage.quirks=${usbstoragequirks} ${extraargs} ${extraboardargs}"
-
-if test "${docker_optimizations}" = "on"; then setenv bootargs "${bootargs} cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory swapaccount=1"; fi
+setenv bootargs "earlyprintk root=${rootdev} ro rootwait rootfstype=${rootfstype} ${consoleargs} loglevel=${verbosity} usb-storage.quirks=${usbstoragequirks} ${extraargs} ${extraboardargs}"
 
 load mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${prefix}dtb/${fdt_file}
 fdt addr ${fdt_addr}
